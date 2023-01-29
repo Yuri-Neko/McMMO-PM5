@@ -70,7 +70,7 @@ class McmmoSetupCommand extends Command implements PluginOwned {
                 return true;
             }
             $a = ["lumberjack" => 0, "farmer" => 1, "excavation" => 2, "miner" => 3, "killer" => 4, "combat" => 5, "builder" => 6, "consumer" => 7, "archer" => 8, "lawnmower" => 9];
-            $this->getOwningPlugin()->spawnFloatingText($sender, $a[$args[1]]);
+            $this->getOwningPlugin()->spawnFloatingText($a[$args[1]], $sender);
         }
         return true;
     }
