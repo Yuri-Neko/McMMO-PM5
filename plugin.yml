@@ -3,3 +3,9 @@ api: 4.0.0
 main: AkmalFairuz\McMMO\Main
 version: 1.0.0
 author: AkmalFairuz
+
+permissions:
+  mcmmo.command:
+    default: true
+  mcmmo.admin:
+    default: op
