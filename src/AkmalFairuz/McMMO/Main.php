@@ -16,33 +16,42 @@
 
 namespace AkmalFairuz\McMMO;
 
-use AkmalFairuz\McMMO\command\McmmoCommand;
-use AkmalFairuz\McMMO\command\McmmoSetupCommand;
-use AkmalFairuz\McMMO\entity\FloatingText;
+use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\ClosureTask;
-use pocketmine\block\Opaque;
-use pocketmine\entity\EntityFactory;
-use pocketmine\entity\EntityDataHelper;
-use pocketmine\entity\Human;
-use pocketmine\entity\Location;
+
+use pocketmine\player\Player;
+
+use pocketmine\event\Listener;
+
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
-use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerItemConsumeEvent;
 use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\block\BlockLegacyIds;
-use pocketmine\player\Player;
-use pocketmine\plugin\PluginBase;
-use pocketmine\world\World;
+
+use pocketmine\entity\EntityFactory;
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\Human;
+use pocketmine\entity\Location;
+
 use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\NameTag;
+
+use pocketmine\world\World;
+
+use pocketmine\block\Opaque;
+use pocketmine\block\BlockLegacyIds;
+
 use pocketmine\utils\TextFormat;
+
+use AkmalFairuz\McMMO\command\McmmoCommand;
+use AkmalFairuz\McMMO\command\McmmoSetupCommand;
+use AkmalFairuz\McMMO\entity\FloatingText;
 
 class Main extends PluginBase implements Listener {
 
@@ -66,7 +75,7 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable() : void {
         $this->saveResource("database.yml");
-        $this->getServer()->getCommandMap()->register("mcmmo", new McmmoCommand("mcmmo", $this));
+        $this->getServer()->getCommandMap()->register("mcmmo", new McmmoCommand($this));
         $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand("mcmmoadmin", $this));
         $this->database = yaml_parse(file_get_contents($this->getDataFolder() . "database.yml"));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);

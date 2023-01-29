@@ -16,17 +16,22 @@
 
 namespace AkmalFairuz\McMMO\command;
 
-use AkmalFairuz\McMMO\entity\FloatingText;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginCommand;
+use pocketmine\command\Command;
+
 use pocketmine\entity\Entity;
 use pocketmine\player\Player;
-use pocketmine\plugin\Plugin;
 
-class McmmoSetupCommand extends PluginCommand {
+use pocketmine\plugin\PluginOwned;
 
-    public function __construct(string $name, Plugin $owner) {
-        parent::__construct($name, $owner);
+use AkmalFairuz\McMMO\entity\FloatingText;
+use AkmalFairuz\McMMO\Main;
+
+class McmmoSetupCommand extends Command implements PluginOwned {
+
+    public function __construct(private Main $owner) {
+        parent::__construct("mcmmoadmin", "Admin McMMO Command", null, []);
+        $this->setPermission("mcmmo.admin");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
@@ -34,19 +39,19 @@ class McmmoSetupCommand extends PluginCommand {
             $sender->sendMessage("Please use command in-game");
             return true;
         }
-        if(!$sender->isOp()) {
-            $sender->sendMessage("You not op on this server");
+        if(!$sender->hasPermission("mcmmo.admin")) {
+            $sender->sendMessage("You don't have permission to use this command");
             return true;
         }
         $a = ["lumberjack", "farmer", "excavation", "miner", "killer", "combat", "builder", "consumer", "archer", "lawnmower"];
-        if(count($args) === 0) {
+        if(count($args) < 1) {
             $sender->sendMessage("Usage: /mcmmoadmin setup ".implode("/" , $a)."> (to spawn floating text) | /mcmmoadmin remove (to remove nearly floating text)");
             return true;
         }
         if($args[0] === "remove") {
             $maxDistance = 3;
             $g = 0;
-            foreach($sender->getLevel()->getNearbyEntities($sender->getBoundingBox()->expandedCopy($maxDistance, $maxDistance, $maxDistance)) as $entity){
+            foreach($sender->getWorld()->getNearbyEntities($sender->getBoundingBox()->expandedCopy($maxDistance, $maxDistance, $maxDistance)) as $entity){
                 if($entity instanceof FloatingText) {
                     $g++;
                     $entity->close();
@@ -64,14 +69,8 @@ class McmmoSetupCommand extends PluginCommand {
                 $sender->sendMessage("Usage: /mcmmoadmin setup ".implode("/" , $a)."> (to spawn floating text)");
                 return true;
             }
-            $nbt = Entity::createBaseNBT($sender->asVector3(), null, $sender->yaw, $sender->pitch);
-            $sender->saveNBT();
-            $nbt->setTag(clone $sender->namedtag->getCompoundTag("Skin"));
             $a = ["lumberjack" => 0, "farmer" => 1, "excavation" => 2, "miner" => 3, "killer" => 4, "combat" => 5, "builder" => 6, "consumer" => 7, "archer" => 8, "lawnmower" => 9];
-            $nbt->setInt("type", $a[$args[1]]);
-            $entity = new FloatingText($sender->level, $nbt);
-            $entity->spawnToAll();
-            $this->plugin->spawnFloatingText($sender, $a[$args[1]]);
+            $this->owner->spawnFloatingText($sender, $a[$args[1]]);
         }
         return true;
     }

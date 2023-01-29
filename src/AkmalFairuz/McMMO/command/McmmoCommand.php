@@ -16,17 +16,20 @@
 
 namespace AkmalFairuz\McMMO\command;
 
+use pocketmine\command\CommandSender;
+use pocketmine\command\Command;
+
+use pocketmine\player\Player;
+use pocketmine\plugin\PluginOwned;
+
 use AkmalFairuz\McMMO\form\McmmoForm;
 use AkmalFairuz\McMMO\Main;
-use pocketmine\command\CommandSender;
-use pocketmine\command\PluginCommand;
-use pocketmine\player\Player;
-use pocketmine\plugin\Plugin;
 
-class McmmoCommand extends PluginCommand {
+class McmmoCommand extends Command implements PluginOwned {
 
-    public function __construct(string $name, Plugin $owner) {
-        parent::__construct($name, $owner);
+    public function __construct(private Main $owner) {
+        parent::__construct("mcmmo", "Opens McMMo Menu", null, []);
+        $this->setPermission("mcmmo.command");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args)
