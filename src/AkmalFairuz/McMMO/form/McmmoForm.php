@@ -19,6 +19,7 @@ namespace AkmalFairuz\McMMO\form;
 use AkmalFairuz\McMMO\formapi\FormAPI;
 use AkmalFairuz\McMMO\Main;
 use pocketmine\player\Player;
+use jojoe77777\FormAPI\SimpleForm;
 
 class McmmoForm {
 
@@ -27,10 +28,11 @@ class McmmoForm {
     }
 
     public function init(Player $player) {
-        $form = (new FormAPI())->createSimpleForm(function (Player $player, $data) {
+        $form = new SimpleForm(function (Player $player, int|null $data) {
             if($data === null) {
                 return;
             }
+
             switch($data) {
                 case 0:
                     $this->stats($player);
@@ -47,7 +49,7 @@ class McmmoForm {
     }
 
     public function stats(Player $player) {
-        $form = (new FormAPI())->createSimpleForm(function (Player $player, $data) {
+        $form = new SimpleForm(function (Player $player, int|null $data) {
             if($data !== null) {
                 $this->init($player);
             }

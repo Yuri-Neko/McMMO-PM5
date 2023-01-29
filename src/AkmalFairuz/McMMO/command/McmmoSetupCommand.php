@@ -20,19 +20,16 @@ use AkmalFairuz\McMMO\entity\FloatingText;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\entity\Entity;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 
-class McmmoSetupCommand extends PluginCommand
-{
+class McmmoSetupCommand extends PluginCommand {
 
-    public function __construct(string $name, Plugin $owner)
-    {
+    public function __construct(string $name, Plugin $owner) {
         parent::__construct($name, $owner);
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)
-    {
+    public function execute(CommandSender $sender, string $commandLabel, array $args) {
         if(!$sender instanceof Player) {
             $sender->sendMessage("Please use command in-game");
             return true;
@@ -77,5 +74,4 @@ class McmmoSetupCommand extends PluginCommand
         }
         return true;
     }
-
 }

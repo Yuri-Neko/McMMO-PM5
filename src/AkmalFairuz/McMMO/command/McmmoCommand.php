@@ -20,14 +20,12 @@ use AkmalFairuz\McMMO\form\McmmoForm;
 use AkmalFairuz\McMMO\Main;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 
-class McmmoCommand extends PluginCommand
-{
+class McmmoCommand extends PluginCommand {
 
-    public function __construct(string $name, Plugin $owner)
-    {
+    public function __construct(string $name, Plugin $owner) {
         parent::__construct($name, $owner);
     }
 
@@ -41,5 +39,4 @@ class McmmoCommand extends PluginCommand
         $form->init($sender);
         return true;
     }
-
 }
