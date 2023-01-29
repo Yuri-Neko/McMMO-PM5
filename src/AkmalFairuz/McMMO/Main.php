@@ -126,7 +126,7 @@ class Main extends PluginBase implements Listener {
 		$nbt->setTag("CapeData", new ByteArrayTag($player->getSkin()->getCapeData()));
 		$nbt->setTag("GeometryName", new StringTag($player->getSkin()->getGeometryName()));
 		$nbt->setTag("GeometryData", new ByteArrayTag($player->getSkin()->getGeometryData()));
-		$entity = new FloatingText(Location::fromObject($player->getPosition(), $player->getPosition()->getWorld(), $player->getLocation()->getYaw() ?? 0, $player->getLocation()->getPitch() ?? 0), $player->getSkin(), $nbt);
+		$entity = new FloatingText(Location::fromObject($player->getPosition(), $player->getPosition()->getWorld(), $player->getLocation()->getYaw(), $player->getLocation()->getPitch()), $player->getSkin(), $nbt);
 		$txt = "";
         $array = [];
         $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
@@ -137,7 +137,7 @@ class Main extends PluginBase implements Listener {
         $array = array_slice($array, 0, 20);
         $top = 1;
         foreach($array as $k => $o){
-			$txt .= TextFormat::RED. $i . ") ".TextFormat::GREEN.$k.TextFormat::RED." : ".TextFormat::BLUE."Lv. ".$o."\n";
+			$txt .= TextFormat::RED. $top . ") ".TextFormat::GREEN.$k.TextFormat::RED." : ".TextFormat::BLUE."Lv. ".$o."\n";
             $top++;
         }
         $entity->setNameTag(TextFormat::BOLD.TextFormat::AQUA."MCMMO Leaderboard\n".TextFormat::RESET.TextFormat::YELLOW.$a[$type].TextFormat::RESET . "\n\n" . $txt);
