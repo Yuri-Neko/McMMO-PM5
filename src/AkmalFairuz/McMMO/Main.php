@@ -29,12 +29,11 @@ use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerItemConsumeEvent;
 use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\item\Item;
-use pocketmine\Player;
+use pocketmine\block\BlockLegacyIds;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 
-class Main extends PluginBase implements Listener
-{
+class Main extends PluginBase implements Listener {
 
     public const LUMBERJACK = 0;
     public const FARMER = 1;
@@ -52,10 +51,9 @@ class Main extends PluginBase implements Listener
     public $database;
 
     /** @var Main */
-    public static $instance;
+    public static Main|null $instance;
 
-    public function onEnable()
-    {
+    public function onEnable() : void {
         $this->saveResource("database.yml");
         $this->getServer()->getCommandMap()->register("mcmmo", new McmmoCommand("mcmmo", $this));
         $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand("mcmmoadmin", $this));
@@ -69,8 +67,7 @@ class Main extends PluginBase implements Listener
         return self::$instance;
     }
 
-    public function onDisable()
-    {
+    public function onDisable() : void {
         file_put_contents($this->getDataFolder() . "database.yml", yaml_emit($this->database));
         sleep(3); // save database delay
     }
@@ -123,45 +120,45 @@ class Main extends PluginBase implements Listener
         $player = $event->getPlayer();
         $block = $event->getBlock();
         switch($block->getId()) {
-            case Item::WHEAT_BLOCK:
-            case Item::BEETROOT_BLOCK:
-            case Item::PUMPKIN_STEM:
-            case Item::PUMPKIN:
-            case Item::MELON_STEM:
-            case Item::MELON_BLOCK:
-            case Item::CARROT_BLOCK:
-            case Item::POTATO_BLOCK:
-            case Item::SUGARCANE_BLOCK:
+            case BlockLegacyIds::WHEAT_BLOCK:
+            case BlockLegacyIds::BEETROOT_BLOCK:
+            case BlockLegacyIds::PUMPKIN_STEM:
+            case BlockLegacyIds::PUMPKIN:
+            case BlockLegacyIds::MELON_STEM:
+            case BlockLegacyIds::MELON_BLOCK:
+            case BlockLegacyIds::CARROT_BLOCK:
+            case BlockLegacyIds::POTATO_BLOCK:
+            case BlockLegacyIds::SUGARCANE_BLOCK:
                 $this->addXp(self::FARMER, $player);
                 return;
-            case Item::STONE:
-            case Item::DIAMOND_ORE:
-            case Item::GOLD_ORE:
-            case Item::REDSTONE_ORE:
-            case Item::IRON_ORE:
-            case Item::COAL_ORE:
-            case Item::EMERALD_ORE:
-            case Item::OBSIDIAN:
+            case BlockLegacyIds::STONE:
+            case BlockLegacyIds::DIAMOND_ORE:
+            case BlockLegacyIds::GOLD_ORE:
+            case BlockLegacyIds::REDSTONE_ORE:
+            case BlockLegacyIds::IRON_ORE:
+            case BlockLegacyIds::COAL_ORE:
+            case BlockLegacyIds::EMERALD_ORE:
+            case BlockLegacyIds::OBSIDIAN:
                 $this->addXp(self::MINER, $player);
                 return;
-            case Item::LOG:
-            case Item::LOG2:
-            case Item::LEAVES:
-            case Item::LEAVES2:
+            case BlockLegacyIds::LOG:
+            case BlockLegacyIds::LOG2:
+            case BlockLegacyIds::LEAVES:
+            case BlockLegacyIds::LEAVES2:
                 $this->addXp(self::LUMBERJACK, $player);
                 return;
-            case Item::DIRT:
-            case Item::GRASS:
-            case Item::GRASS_PATH:
-            case Item::FARMLAND:
-            case Item::SAND:
-            case Item::GRAVEL:
+            case BlockLegacyIds::DIRT:
+            case BlockLegacyIds::GRASS:
+            case BlockLegacyIds::GRASS_PATH:
+            case BlockLegacyIds::FARMLAND:
+            case BlockLegacyIds::SAND:
+            case BlockLegacyIds::GRAVEL:
                 $this->addXp(self::EXCAVATION, $player);
                 return;
-            case Item::TALL_GRASS:
-            case Item::YELLOW_FLOWER:
-            case Item::RED_FLOWER:
-            case Item::CHORUS_FLOWER:
+            case BlockLegacyIds::TALL_GRASS:
+            case BlockLegacyIds::YELLOW_FLOWER:
+            case BlockLegacyIds::RED_FLOWER:
+            case BlockLegacyIds::CHORUS_FLOWER:
                 $this->addXp(self::LAWN_MOWER, $player);
                 return;
         }
@@ -186,18 +183,17 @@ class Main extends PluginBase implements Listener
      * @priority LOWEST
      */
     public function onDamage(EntityDamageEvent $event) {
+        $entity = $event->getEntity();
         if($event->isCancelled()) {
             return;
         }
-        if($event->getEntity() instanceof FloatingText) {
-            $event->setCancelled();
+        if($entity instanceof FloatingText) {
+            $event->cancel();
             return;
         }
         if($event instanceof EntityDamageByEntityEvent) {
-            $entity = $event->getEntity();
             if(!$entity instanceof Player) return;
-            $damager = $event->getDamager();
-            if($damager instanceof Player) {
+            if(($damager = $event->getDamager()) instanceof Player) {
                 if (($entity->getHealth() - $event->getFinalDamage()) <= 0) {
                     $this->addXp(self::KILLER, $damager);
                 }
@@ -223,7 +219,7 @@ class Main extends PluginBase implements Listener
      * @priority LOWEST
      */
     public function onItemConsume(PlayerItemConsumeEvent $event) {
-        if($event->getPlayer()->getFood() < $event->getPlayer()->getMaxFood()) {
+        if($event->getPlayer()->getHungerManager()->getFood() < $event->getPlayer()->getHungerManager()->getMaxFood()) {
             $this->addXp(self::CONSUMER, $event->getPlayer());
         }
     }

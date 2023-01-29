@@ -18,16 +18,12 @@ namespace AkmalFairuz\McMMO\form;
 
 use AkmalFairuz\McMMO\formapi\FormAPI;
 use AkmalFairuz\McMMO\Main;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
-class McmmoForm
-{
-    /** @var Main */
-    private $plugin;
+class McmmoForm {
 
-    public function __construct(Main $plugin)
-    {
-        $this->plugin = $plugin;
+    public function __construct(private Main $plugin) {
+        // NOOP
     }
 
     public function init(Player $player) {
