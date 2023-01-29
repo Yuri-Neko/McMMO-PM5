@@ -94,7 +94,7 @@ class McmmoForm {
 
     public function leaderboard(Player $player) {
         $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
-        $form = (new FormAPI())->createSimpleForm(function (Player $player, $data) use ($a) {
+        $form = new SimpleForm(function (Player $player, int|null $data) use ($a) {
             if($data === null) {
                 return;
             }
@@ -114,7 +114,7 @@ class McmmoForm {
     }
 
     public function leaderboards(Player $player, int $type) {
-        $form = (new FormAPI())->createSimpleForm(function (Player $player, $data) {
+        $form = new SimpleForm(function (Player $player, int|null $data) {
             if($data !== null) {
                 $this->leaderboard($player);
             }
