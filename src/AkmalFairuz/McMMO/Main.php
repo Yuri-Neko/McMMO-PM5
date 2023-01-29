@@ -20,7 +20,10 @@ use AkmalFairuz\McMMO\command\McmmoCommand;
 use AkmalFairuz\McMMO\command\McmmoSetupCommand;
 use AkmalFairuz\McMMO\entity\FloatingText;
 use pocketmine\block\Solid;
-use pocketmine\entity\Entity;
+use pocketmine\entity\EntityFactory;
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\Human;
+use pocketmine\entity\Location;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -32,6 +35,13 @@ use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\world\World;
+use pocketmine\nbt\tag\ByteArrayTag;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\StringTag;
+use pocketmine\nbt\tag\NameTag;
+use pocketmine\utils\TextFormat;
 
 class Main extends PluginBase implements Listener {
 
@@ -59,7 +69,15 @@ class Main extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand("mcmmoadmin", $this));
         $this->database = yaml_parse(file_get_contents($this->getDataFolder() . "database.yml"));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        Entity::registerEntity(FloatingText::class, true);
+        // Entity::registerEntity(FloatingText::class, true);
+        EntityFactory::getInstance()->register(FloatingText::class, function (World $world, CompoundTag $nbt) : FloatingText {
+            return new FloatingText(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
+        }, ["FloatingText", "FloatingTextEntity"]);
+        $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(
+            function () {
+                // TODO: Repeat top entity leaderboard
+            }
+        ), 20);
         self::$instance = $this;
     }
 
@@ -99,6 +117,32 @@ class Main extends PluginBase implements Listener {
     public function getAll(int $type) : array {
         return $this->database["level"][$type];
     }
+
+    public function spawnFloatingText(int $type, Player $player){
+		$nbt = CompoundTag::create();
+		$nbt->setTag("Name", new StringTag($player->getSkin()->getSkinId()));
+		$nbt->setTag("Data", new ByteArrayTag($player->getSkin()->getSkinData()));
+		$nbt->setTag("CapeData", new ByteArrayTag($player->getSkin()->getCapeData()));
+		$nbt->setTag("GeometryName", new StringTag($player->getSkin()->getGeometryName()));
+		$nbt->setTag("GeometryData", new ByteArrayTag($player->getSkin()->getGeometryData()));
+		$entity = new FloatingText(Location::fromObject($player->getPosition(), $player->getPosition()->getWorld(), $player->getLocation()->getYaw() ?? 0, $player->getLocation()->getPitch() ?? 0), $player->getSkin(), $nbt);
+		$txt = "";
+        $array = [];
+        $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
+        foreach($this->getAll($type) as $k => $o){
+            $array[mb_strtolower($k)] = $o;
+        }
+        arsort($array);
+        $array = array_slice($array, 0, 20);
+        $top = 1;
+        foreach($array as $k => $o){
+			$txt .= TextFormat::RED. $i . ") ".TextFormat::GREEN.$k.TextFormat::RED." : ".TextFormat::BLUE."Lv. ".$o."\n";
+            $top++;
+        }
+        $entity->setNameTag(TextFormat::BOLD.TextFormat::AQUA."MCMMO Leaderboard\n".TextFormat::RESET.TextFormat::YELLOW.$a[$type].TextFormat::RESET . "\n\n" . $txt);
+		$entity->setNameTagAlwaysVisible(true);
+		$entity->spawnToAll();
+	} 
 
     public function onLogin(PlayerLoginEvent $event) {
         $player = $event->getPlayer();
@@ -185,10 +229,6 @@ class Main extends PluginBase implements Listener {
     public function onDamage(EntityDamageEvent $event) {
         $entity = $event->getEntity();
         if($event->isCancelled()) {
-            return;
-        }
-        if($entity instanceof FloatingText) {
-            $event->cancel();
             return;
         }
         if($event instanceof EntityDamageByEntityEvent) {

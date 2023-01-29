@@ -71,6 +71,7 @@ class McmmoSetupCommand extends PluginCommand {
             $nbt->setInt("type", $a[$args[1]]);
             $entity = new FloatingText($sender->level, $nbt);
             $entity->spawnToAll();
+            $this->plugin->spawnFloatingText($sender, $a[$args[1]]);
         }
         return true;
     }
