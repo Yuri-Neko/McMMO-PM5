@@ -76,7 +76,7 @@ class Main extends PluginBase implements Listener {
     public function onEnable() : void {
         $this->saveResource("database.yml");
         $this->getServer()->getCommandMap()->register("mcmmo", new McmmoCommand($this));
-        $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand("mcmmoadmin", $this));
+        $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand($this));
         $this->database = yaml_parse(file_get_contents($this->getDataFolder() . "database.yml"));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         // Entity::registerEntity(FloatingText::class, true);
