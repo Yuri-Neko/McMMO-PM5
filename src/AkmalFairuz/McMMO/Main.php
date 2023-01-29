@@ -218,7 +218,7 @@ class Main extends PluginBase implements Listener {
         }
         $player = $event->getPlayer();
         $block = $event->getBlock();
-        if($block instanceof Solid) {
+        if($block instanceof Opaque) {
             $this->addXp(self::BUILDER, $player);
             return;
         }
