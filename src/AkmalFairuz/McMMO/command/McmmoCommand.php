@@ -20,14 +20,13 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
 
 use pocketmine\player\Player;
-use pocketmine\plugin\PluginOwned;
 
 use AkmalFairuz\McMMO\form\McmmoForm;
 use AkmalFairuz\McMMO\Main;
 
-class McmmoCommand extends Command implements PluginOwned {
+class McmmoCommand extends Command {
 
-    public function __construct(private Main $owner) {
+    public function __construct() {
         parent::__construct("mcmmo", "Opens McMMo Menu", null, []);
         $this->setPermission("mcmmo.command");
     }
