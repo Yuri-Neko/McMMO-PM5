@@ -46,7 +46,7 @@ class FloatingText extends Human {
 		$this->setNameTagAlwaysVisible(true);
 		$this->setScale(0.0000000000000000000000000000000001);
 		$this->updateTick = 0;
-        $this->type = $this->namedtag->getInt("type");
+        $this->type = $nbt->getInt("type");
 	}
 
 	public function onUpdate(int $currentTick) : bool {
