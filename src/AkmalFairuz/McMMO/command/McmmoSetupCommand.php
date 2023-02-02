@@ -22,6 +22,14 @@ use pocketmine\command\Command;
 use pocketmine\entity\Entity;
 use pocketmine\player\Player;
 
+use pocketmine\nbt\tag\ByteArrayTag;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\StringTag;
+use pocketmine\nbt\tag\NameTag;
+
+use pocketmine\entity\Location;
+
 use AkmalFairuz\McMMO\entity\FloatingText;
 use AkmalFairuz\McMMO\Main;
 
