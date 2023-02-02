@@ -66,9 +66,7 @@ class FloatingText extends Human {
                 $l .= TextFormat::RED. $i . ") " . TextFormat::GREEN . $k . TextFormat::RED . " : " . TextFormat::BLUE . "Lv. " . $o . "\n";
             }
             $this->setNameTag(TextFormat::BOLD . TextFormat::AQUA . "MCMMO Leaderboard\n" . TextFormat::RESET . TextFormat::YELLOW . $a[$this->type] . TextFormat::RESET . "\n\n".$l);
-            foreach ($this->getViewers() as $player) {
-                $this->sendNameTag($player);
-            }
+            $this->setNameTagAlwaysVisible(true);
         }
         return true; 
     }
