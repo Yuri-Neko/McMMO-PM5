@@ -22,8 +22,11 @@ use pocketmine\player\Player;
 
 use pocketmine\nbt\tag\CompoundTag;
 
-use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataTypes;
+
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\utils\TextFormat;
 
 use AkmalFairuz\McMMO\Main;
@@ -72,8 +75,8 @@ class FloatingText extends Human {
 
 	public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
-        $pk->entityRuntimeId = $this->getId();
-        $pk->metadata = [self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $this->getNameTag()]];
+        $pk->actorRuntimeId = $this->getId();
+        $pk->metadata = [EntityMetadataProperties::NAMETAG => [EntityMetadataTypes::STRING, $this->getNameTag()]];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
