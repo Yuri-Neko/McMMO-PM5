@@ -46,7 +46,7 @@ class FloatingText extends Human {
         $this->type = $this->namedtag->getInt("type");
 	}
 
-	public function onUpdate(int $currentTick) {
+	public function onUpdate(int $currentTick) : bool {
         parent::onUpdate($currentTick);
         $this->setImmobile(true);
 		$this->updateTick++;
@@ -74,7 +74,7 @@ class FloatingText extends Human {
         $pk = new SetActorDataPacket();
         $pk->entityRuntimeId = $this->getId();
         $pk->metadata = [self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $this->getNameTag()]];
-        $player->dataPacket($pk);
+        $player->getNetworkSession()->sendDataPacket($pk);
     }
 
 	public function attack(EntityDamageEvent $source) : void {
