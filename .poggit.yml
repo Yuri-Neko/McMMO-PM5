@@ -6,5 +6,5 @@ projects:
   McMMO:
     path: ""
     libs:
-      - src: https://poggit.pmmp.io/ci/Infernus101/FormAPI/libFormAPI
+      - src: https://poggit.pmmp.io/ci/LatamPMDevs/FormAPI/libFormAPI
 ...
