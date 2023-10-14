@@ -33,9 +33,9 @@ use AkmalFairuz\McMMO\Main;
 
 class FloatingText extends Human {
 
-    public $updateTick = 0;
+    public int $updateTick = 0;
 
-    public $type = 0;
+    public int $type = 0;
 
     public function getName() : string {
 		return "FloatingText";
@@ -43,7 +43,7 @@ class FloatingText extends Human {
 
 	public function initEntity(CompoundTag $nbt) : void {
 		parent::initEntity($nbt);
-		$this->setNameTagAlwaysVisible(true);
+		$this->setNameTagAlwaysVisible();
 		$this->setScale(1);
 		$this->updateTick = 0;
         $this->type = $nbt->getInt("type");
@@ -51,7 +51,7 @@ class FloatingText extends Human {
 
 	public function onUpdate(int $currentTick) : bool {
         parent::onUpdate($currentTick);
-        $this->setImmobile(true);
+        $this->setNoClientPredictions();
 		$this->updateTick++;
         if($this->updateTick == 20) {
             $this->updateTick = 0;
@@ -66,7 +66,7 @@ class FloatingText extends Human {
                 $l .= TextFormat::RED. $i . ") " . TextFormat::GREEN . $k . TextFormat::RED . " : " . TextFormat::BLUE . "Lv. " . $o . "\n";
             }
             $this->setNameTag(TextFormat::BOLD . TextFormat::AQUA . "MCMMO Leaderboard\n" . TextFormat::RESET . TextFormat::YELLOW . $a[$this->type] . TextFormat::RESET . "\n\n".$l);
-            $this->setNameTagAlwaysVisible(true);
+            $this->setNameTagAlwaysVisible();
         }
         return true; 
     }

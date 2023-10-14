@@ -16,6 +16,7 @@
 
 namespace AkmalFairuz\McMMO;
 
+use pocketmine\block\BlockTypeIds;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\ClosureTask;
 
@@ -38,14 +39,12 @@ use pocketmine\entity\Location;
 
 use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\nbt\tag\NameTag;
 
+use pocketmine\utils\SingletonTrait;
 use pocketmine\world\World;
 
 use pocketmine\block\Opaque;
-use pocketmine\block\BlockLegacyIds;
 
 use pocketmine\utils\TextFormat;
 
@@ -54,6 +53,7 @@ use AkmalFairuz\McMMO\command\McmmoSetupCommand;
 use AkmalFairuz\McMMO\entity\FloatingText;
 
 class Main extends PluginBase implements Listener {
+    use SingletonTrait;
 
     public const LUMBERJACK = 0;
     public const FARMER = 1;
@@ -68,10 +68,7 @@ class Main extends PluginBase implements Listener {
 
 
     /** @var array */
-    public $database;
-
-    /** @var Main */
-    public static Main|null $instance;
+    public array $database;
 
     public function onEnable() : void {
         $this->saveResource("database.yml");
@@ -88,11 +85,7 @@ class Main extends PluginBase implements Listener {
                 // TODO: Repeat top entity leaderboard
             }
         ), 20);
-        self::$instance = $this;
-    }
-
-    public static function getInstance() : Main {
-        return self::$instance;
+        self::setInstance($this);
     }
 
     public function onDisable() : void {
@@ -173,46 +166,59 @@ class Main extends PluginBase implements Listener {
         }
         $player = $event->getPlayer();
         $block = $event->getBlock();
-        switch($block->getId()) {
-            case BlockLegacyIds::WHEAT_BLOCK:
-            case BlockLegacyIds::BEETROOT_BLOCK:
-            case BlockLegacyIds::PUMPKIN_STEM:
-            case BlockLegacyIds::PUMPKIN:
-            case BlockLegacyIds::MELON_STEM:
-            case BlockLegacyIds::MELON_BLOCK:
-            case BlockLegacyIds::CARROT_BLOCK:
-            case BlockLegacyIds::POTATO_BLOCK:
-            case BlockLegacyIds::SUGARCANE_BLOCK:
+        switch($block->getTypeId()) {
+            case BlockTypeIds::WHEAT:
+            case BlockTypeIds::BEETROOTS:
+            case BlockTypeIds::PUMPKIN_STEM:
+            case BlockTypeIds::PUMPKIN:
+            case BlockTypeIds::MELON_STEM:
+            case BlockTypeIds::MELON:
+            case BlockTypeIds::CARROTS:
+            case BlockTypeIds::POTATOES:
+            case BlockTypeIds::SUGARCANE:
                 $this->addXp(self::FARMER, $player);
                 return;
-            case BlockLegacyIds::STONE:
-            case BlockLegacyIds::DIAMOND_ORE:
-            case BlockLegacyIds::GOLD_ORE:
-            case BlockLegacyIds::REDSTONE_ORE:
-            case BlockLegacyIds::IRON_ORE:
-            case BlockLegacyIds::COAL_ORE:
-            case BlockLegacyIds::EMERALD_ORE:
-            case BlockLegacyIds::OBSIDIAN:
+            case BlockTypeIds::STONE:
+            case BlockTypeIds::DIAMOND_ORE:
+            case BlockTypeIds::GOLD_ORE:
+            case BlockTypeIds::REDSTONE_ORE:
+            case BlockTypeIds::IRON_ORE:
+            case BlockTypeIds::COAL_ORE:
+            case BlockTypeIds::EMERALD_ORE:
+            case BlockTypeIds::OBSIDIAN:
                 $this->addXp(self::MINER, $player);
                 return;
-            case BlockLegacyIds::LOG:
-            case BlockLegacyIds::LOG2:
-            case BlockLegacyIds::LEAVES:
-            case BlockLegacyIds::LEAVES2:
+            case BlockTypeIds::OAK_LOG:
+            case BlockTypeIds::BIRCH_LOG:
+            case BlockTypeIds::ACACIA_LOG:
+            case BlockTypeIds::CHERRY_LOG:
+            case BlockTypeIds::DARK_OAK_LOG:
+            case BlockTypeIds::JUNGLE_LOG:
+            case BlockTypeIds::MANGROVE_LOG:
+            case BlockTypeIds::SPRUCE_LOG:
+            case BlockTypeIds::OAK_LEAVES:
+            case BlockTypeIds::BIRCH_LEAVES:
+            case BlockTypeIds::ACACIA_LEAVES:
+            case BlockTypeIds::CHERRY_LEAVES:
+            case BlockTypeIds::DARK_OAK_LEAVES:
+            case BlockTypeIds::JUNGLE_LEAVES:
+            case BlockTypeIds::MANGROVE_LEAVES:
+            case BlockTypeIds::SPRUCE_LEAVES:
                 $this->addXp(self::LUMBERJACK, $player);
                 return;
-            case BlockLegacyIds::DIRT:
-            case BlockLegacyIds::GRASS:
-            case BlockLegacyIds::GRASS_PATH:
-            case BlockLegacyIds::FARMLAND:
-            case BlockLegacyIds::SAND:
-            case BlockLegacyIds::GRAVEL:
+            case BlockTypeIds::DIRT:
+            case BlockTypeIds::GRASS:
+            case BlockTypeIds::GRASS_PATH:
+            case BlockTypeIds::FARMLAND:
+            case BlockTypeIds::SAND:
+            case BlockTypeIds::GRAVEL:
                 $this->addXp(self::EXCAVATION, $player);
                 return;
-            case BlockLegacyIds::TALL_GRASS:
-            case BlockLegacyIds::YELLOW_FLOWER:
-            case BlockLegacyIds::RED_FLOWER:
-            case BlockLegacyIds::CHORUS_FLOWER:
+            case BlockTypeIds::TALL_GRASS:
+            case BlockTypeIds::CORNFLOWER:
+            case BlockTypeIds::SUNFLOWER:
+            case BlockTypeIds::POPPY:
+            case BlockTypeIds::CHORUS_FLOWER:
                 $this->addXp(self::LAWN_MOWER, $player);
                 return;
         }
@@ -226,10 +232,9 @@ class Main extends PluginBase implements Listener {
             return;
         }
         $player = $event->getPlayer();
-        $block = $event->getBlock();
+        $block = $event->getBlockAgainst();
         if($block instanceof Opaque) {
             $this->addXp(self::BUILDER, $player);
-            return;
         }
     }
 

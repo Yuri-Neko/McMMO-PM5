@@ -19,19 +19,15 @@ namespace AkmalFairuz\McMMO\command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
 
-use pocketmine\entity\Entity;
 use pocketmine\player\Player;
 
 use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\nbt\tag\NameTag;
 
 use pocketmine\entity\Location;
 
 use AkmalFairuz\McMMO\entity\FloatingText;
-use AkmalFairuz\McMMO\Main;
 
 class McmmoSetupCommand extends Command {
 
@@ -40,7 +36,8 @@ class McmmoSetupCommand extends Command {
         $this->setPermission("mcmmo.admin");
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool
+    {
         if(!$sender instanceof Player) {
             $sender->sendMessage("Please use command in-game");
             return true;
@@ -86,7 +83,7 @@ class McmmoSetupCommand extends Command {
             $nbt->setTag("GeometryData", new ByteArrayTag($sender->getSkin()->getGeometryData()));
             $nbt->setInt("type", $a[$args[1]]);
             $entity = new FloatingText(Location::fromObject($sender->getPosition(), $sender->getPosition()->getWorld(), $sender->getLocation()->getYaw(), $sender->getLocation()->getPitch()), $sender->getSkin(), $nbt);
-            $entity->setNameTagAlwaysVisible(true);
+            $entity->setNameTagAlwaysVisible();
             $entity->spawnToAll();
         }
         return true;

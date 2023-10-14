@@ -16,7 +16,6 @@
 
 namespace AkmalFairuz\McMMO\form;
 
-use AkmalFairuz\McMMO\formapi\FormAPI;
 use AkmalFairuz\McMMO\Main;
 use pocketmine\player\Player;
 use jojoe77777\FormAPI\SimpleForm;
@@ -45,7 +44,7 @@ class McmmoForm {
         $form->setTitle("McMMO");
         $form->addButton("Your stats");
         $form->addButton("Leaderboard");
-        $form->sendToPlayer($player);
+        $player->sendForm($form);
     }
 
     public function stats(Player $player) {
@@ -89,7 +88,7 @@ class McmmoForm {
         ];
         $form->setContent(implode("\n", $content));
         $form->addButton("Back");
-        $form->sendToPlayer($player);
+        $player->sendForm($form);
     }
 
     public function leaderboard(Player $player) {
@@ -110,7 +109,7 @@ class McmmoForm {
             $form->addButton($as);
         }
         $form->addButton("Back");
-        $form->sendToPlayer($player);
+        $player->sendForm($form);
     }
 
     public function leaderboards(Player $player, int $type) {
@@ -132,6 +131,6 @@ class McmmoForm {
         }
         $form->setContent("Player Name | Level\n\n".$content);
         $form->addButton("Back");
-        $form->sendToPlayer($player);
+        $player->sendForm($form);
     }
 }
