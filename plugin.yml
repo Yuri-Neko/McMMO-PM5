@@ -9,3 +9,4 @@ permissions:
     default: true
   mcmmo.admin:
     default: op
+    
