@@ -76,15 +76,9 @@ class Main extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand());
         $this->database = yaml_parse(file_get_contents($this->getDataFolder() . "database.yml"));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        // Entity::registerEntity(FloatingText::class, true);
         EntityFactory::getInstance()->register(FloatingText::class, function (World $world, CompoundTag $nbt) : FloatingText {
             return new FloatingText(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
         }, ["FloatingText", "FloatingTextEntity"]);
-        $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(
-            function () {
-                // TODO: Repeat top entity leaderboard
-            }
-        ), 20);
         self::setInstance($this);
     }
 
@@ -120,32 +114,6 @@ class Main extends PluginBase implements Listener {
     public function getAll(int $type) : array {
         return $this->database["level"][$type];
     }
-
-    public function spawnFloatingText(int $type, Player $player){
-		$nbt = CompoundTag::create();
-		$nbt->setTag("Name", new StringTag($player->getSkin()->getSkinId()));
-		$nbt->setTag("Data", new ByteArrayTag($player->getSkin()->getSkinData()));
-		$nbt->setTag("CapeData", new ByteArrayTag($player->getSkin()->getCapeData()));
-		$nbt->setTag("GeometryName", new StringTag($player->getSkin()->getGeometryName()));
-		$nbt->setTag("GeometryData", new ByteArrayTag($player->getSkin()->getGeometryData()));
-		$entity = new FloatingText(Location::fromObject($player->getPosition(), $player->getPosition()->getWorld(), $player->getLocation()->getYaw(), $player->getLocation()->getPitch()), $player->getSkin(), $nbt);
-		$txt = "";
-        $array = [];
-        $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
-        foreach($this->getAll($type) as $k => $o){
-            $array[mb_strtolower($k)] = $o;
-        }
-        arsort($array);
-        $array = array_slice($array, 0, 20);
-        $top = 1;
-        foreach($array as $k => $o){
-			$txt .= TextFormat::RED. $top . ") ".TextFormat::GREEN.$k.TextFormat::RED." : ".TextFormat::BLUE."Lv. ".$o."\n";
-            $top++;
-        }
-        $entity->setNameTag(TextFormat::BOLD.TextFormat::AQUA."MCMMO Leaderboard\n".TextFormat::RESET.TextFormat::YELLOW.$a[$type].TextFormat::RESET . "\n\n" . $txt);
-		$entity->setNameTagAlwaysVisible(true);
-		$entity->spawnToAll();
-	} 
 
     public function onLogin(PlayerLoginEvent $event) {
         $player = $event->getPlayer();

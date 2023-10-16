@@ -30,6 +30,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\utils\TextFormat;
 
 use AkmalFairuz\McMMO\Main;
+use pocketmine\network\mcpe\protocol\types\entity\StringMetadataProperty;
 
 class FloatingText extends Human {
 
@@ -66,7 +67,9 @@ class FloatingText extends Human {
                 $l .= TextFormat::RED. $i . ") " . TextFormat::GREEN . $k . TextFormat::RED . " : " . TextFormat::BLUE . "Lv. " . $o . "\n";
             }
             $this->setNameTag(TextFormat::BOLD . TextFormat::AQUA . "MCMMO Leaderboard\n" . TextFormat::RESET . TextFormat::YELLOW . $a[$this->type] . TextFormat::RESET . "\n\n".$l);
-            $this->setNameTagAlwaysVisible();
+            foreach ($this->getViewers() as $player) {
+                $this->sendNameTag($player);
+            }
         }
         return true; 
     }
@@ -74,7 +77,7 @@ class FloatingText extends Human {
 	public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [EntityMetadataProperties::NAMETAG => [EntityMetadataTypes::STRING, $this->getNameTag()]];
+        $pk->metadata = [EntityMetadataProperties::NAMETAG =>  new StringMetadataProperty($this->getNameTag())];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
