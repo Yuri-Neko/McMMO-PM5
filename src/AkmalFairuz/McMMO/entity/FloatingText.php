@@ -77,7 +77,7 @@ class FloatingText extends Human {
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [EntityMetadataProperties::NAMETAG =>  new StringMetadataProperty($this->getNameTag())];
+        $pk->metadata = [EntityMetadataProperties::NAMETAG => new StringMetadataProperty($this->getNameTag())];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
