@@ -45,7 +45,7 @@ class FloatingText extends Human {
     public function initEntity(CompoundTag $nbt) : void {
 	parent::initEntity($nbt);
 	$this->setNameTagAlwaysVisible();
-	$this->setScale(1);
+	$this->setScale(0.0001);
 	$this->updateTick = 0;
         $this->type = $nbt->getInt("type");
     }

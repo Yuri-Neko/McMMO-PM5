@@ -2,7 +2,7 @@
 McMMO plugin for PocketMine-MP
 
 ## Download
-https://poggit.pmmp.io/ci/AkmalFairuz/McMMO
+[Github](https://poggit.pmmp.io/ci/AkmalFairuz/McMMO)
 
 ## Usage
 /mcmmo - to check your stats and leaderboard (UI)
