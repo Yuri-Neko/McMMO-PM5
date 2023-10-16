@@ -18,7 +18,6 @@ namespace AkmalFairuz\McMMO;
 
 use pocketmine\block\BlockTypeIds;
 use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\ClosureTask;
 
 use pocketmine\player\Player;
 
@@ -35,11 +34,8 @@ use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\Human;
-use pocketmine\entity\Location;
 
-use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\StringTag;
 
 use onebone\economyland\EconomyLand; //support EconomyLand
 
@@ -47,8 +43,6 @@ use pocketmine\utils\SingletonTrait;
 use pocketmine\world\World;
 
 use pocketmine\block\Opaque;
-
-use pocketmine\utils\TextFormat;
 
 use AkmalFairuz\McMMO\command\McmmoCommand;
 use AkmalFairuz\McMMO\command\McmmoSetupCommand;
@@ -75,6 +69,7 @@ class Main extends PluginBase implements Listener {
     public ?EconomyLand $economyLand;
 
     public function onEnable() : void {
+        $this->saveDefaultConfig();
         $this->saveResource("database.yml");
         $this->getServer()->getCommandMap()->register("mcmmo", new McmmoCommand());
         $this->getServer()->getCommandMap()->register("mcmmoadmin", new McmmoSetupCommand());
@@ -108,13 +103,13 @@ class Main extends PluginBase implements Listener {
             $this->addLevel($type, $player);
         }
         $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
-        $player->sendTip("Your McMMO ".$a[$type]." xp is ".$this->getXp($type, $player));
+        $player->sendTip(str_replace(["{type}", "{xp}"], [$a[$type], $this->getXp($type, $player)], $this->getConfig()->get("message")["progress"]));
     }
 
     public function addLevel(int $type, Player $player) {
         $this->database["level"][$type][strtolower($player->getName())]++;
         $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
-        $player->sendMessage("Your McMMO ".$a[$type]." level is ".$this->getLevel($type, $player));
+        $player->sendTip(str_replace(["{type}", "{level}"], [$a[$type], $this->getLevel($type, $player)], $this->getConfig()->get("message")["progress"]));
     }
 
     public function getAll(int $type) : array {

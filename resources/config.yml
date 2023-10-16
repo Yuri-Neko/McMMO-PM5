@@ -1,0 +1,3 @@
+message:
+  progress: "Your McMMO {type} xp is {xp}"
+  level-upgrade: "Your McMMO {type} level is {level}"
