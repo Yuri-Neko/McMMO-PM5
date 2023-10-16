@@ -39,21 +39,21 @@ class FloatingText extends Human {
     public int $type = 0;
 
     public function getName() : string {
-		return "FloatingText";
-	}
+	return "FloatingText";
+    }
 
-	public function initEntity(CompoundTag $nbt) : void {
-		parent::initEntity($nbt);
-		$this->setNameTagAlwaysVisible();
-		$this->setScale(1);
-		$this->updateTick = 0;
+    public function initEntity(CompoundTag $nbt) : void {
+	parent::initEntity($nbt);
+	$this->setNameTagAlwaysVisible();
+	$this->setScale(1);
+	$this->updateTick = 0;
         $this->type = $nbt->getInt("type");
-	}
+    }
 
-	public function onUpdate(int $currentTick) : bool {
+    public function onUpdate(int $currentTick) : bool {
         parent::onUpdate($currentTick);
         $this->setNoClientPredictions();
-		$this->updateTick++;
+	$this->updateTick++;
         if($this->updateTick == 20) {
             $this->updateTick = 0;
             $a = ["Lumberjack", "Farmer", "Excavation", "Miner", "Killer", "Combat", "Builder", "Consumer", "Archer", "Lawn Mower"];
@@ -74,14 +74,14 @@ class FloatingText extends Human {
         return true; 
     }
 
-	public function sendNameTag(Player $player): void {
+    public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
         $pk->metadata = [EntityMetadataProperties::NAMETAG =>  new StringMetadataProperty($this->getNameTag())];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
-	public function attack(EntityDamageEvent $source) : void {
-		$source->cancel();
-	}
+    public function attack(EntityDamageEvent $source) : void {
+    	$source->cancel();
+    }
 }
