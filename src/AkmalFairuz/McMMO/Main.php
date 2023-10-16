@@ -134,9 +134,9 @@ class Main extends PluginBase implements Listener {
             return;
         }
 
-        if (!$this->economyLand->permissionCheck($event)) {
-        	return;
-        }
+        // if (!$this->economyLand->permissionCheck($event)) {
+        // 	return;
+        // }
         
         $player = $event->getPlayer();
         $block = $event->getBlock();
@@ -206,9 +206,9 @@ class Main extends PluginBase implements Listener {
             return;
         }
         
-        if (!$this->economyLand->permissionCheck($event)) {
-        	return;
-        }
+        // if (!$this->economyLand->permissionCheck($event)) {
+        // 	return;
+        // }
         
         $player = $event->getPlayer();
         $block = $event->getBlockAgainst();
