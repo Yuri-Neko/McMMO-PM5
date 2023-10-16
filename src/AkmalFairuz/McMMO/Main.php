@@ -41,6 +41,8 @@ use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\StringTag;
 
+use onebone\economyland\EconomyLand; //support EconomyLand
+
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\World;
 
@@ -70,6 +72,8 @@ class Main extends PluginBase implements Listener {
     /** @var array */
     public array $database;
 
+    public ?EconomyLand $economyLand;
+
     public function onEnable() : void {
         $this->saveResource("database.yml");
         $this->getServer()->getCommandMap()->register("mcmmo", new McmmoCommand());
@@ -80,6 +84,8 @@ class Main extends PluginBase implements Listener {
             return new FloatingText(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
         }, ["FloatingText", "FloatingTextEntity"]);
         self::setInstance($this);
+
+        $this->economyLand = $this->getServer()->getPluginManager()->getPlugin('EconomyLand');
     }
 
     public function onDisable() : void {
@@ -132,6 +138,11 @@ class Main extends PluginBase implements Listener {
         if($event->isCancelled()) {
             return;
         }
+
+        if (!$this->economyLand->permissionCheck($event)) {
+        	return;
+        }
+        
         $player = $event->getPlayer();
         $block = $event->getBlock();
         switch($block->getTypeId()) {
@@ -199,6 +210,11 @@ class Main extends PluginBase implements Listener {
         if($event->isCancelled()) {
             return;
         }
+        
+        if (!$this->economyLand->permissionCheck($event)) {
+        	return;
+        }
+        
         $player = $event->getPlayer();
         $block = $event->getBlockAgainst();
         if($block instanceof Opaque) {
